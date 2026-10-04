@@ -5,7 +5,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'YOUR_GITHUB_REPOSITORY'
+                git 'https://github.com/Mohamedthoufiq31/jenkins-pra2.git'
             }
         }
 
