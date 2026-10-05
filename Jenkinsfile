@@ -4,45 +4,70 @@ pipeline {
         label 'tomcat'
     }
 
-    environment {
-        TOMCAT_HOME = '/opt/apache-tomcat-9.0.122'
-        APP_NAME = 'tomcat-practice'
-    }
-
     stages {
 
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/Mohamedthoufiq31/jenkins-pra2.git'
+                echo 'Source code checkout completed'
+            }
+        }
+
+        stage('Check Files') {
+            steps {
+                sh '''
+                    echo "Running on:"
+                    hostname
+
+                    echo "Jenkins node:"
+                    echo "$NODE_NAME"
+
+                    echo "Workspace:"
+                    pwd
+
+                    echo "Files:"
+                    ls -la
+
+                    echo "POM files:"
+                    find . -name "pom.xml"
+                '''
             }
         }
 
         stage('Build WAR') {
             steps {
-                sh 'mvn clean package'
+                dir('tomcat-pratice1') {
+                    sh 'mvn clean package'
+                }
             }
         }
 
         stage('Find WAR') {
             steps {
-                sh 'find target -name "*.war" -type f'
+                dir('tomcat-pratice1') {
+                    sh 'find target -name "*.war"'
+                }
             }
         }
 
         stage('Deploy to Tomcat') {
             steps {
                 sh '''
-                    sudo cp target/*.war $TOMCAT_HOME/webapps/$APP_NAME.war
+                    cp tomcat-pratice1/target/*.war /opt/apache-tomcat-9.0.122/webapps/
                 '''
+            }
+        }
+
+        stage('Application URL') {
+            steps {
+                echo 'Application deployed!'
+                echo 'http://54.221.60.120:9090/tomcat-practice-1.0/hello'
             }
         }
     }
 
     post {
-
         success {
-            echo 'Application deployed successfully!'
+            echo 'Deployment successful!'
         }
 
         failure {
