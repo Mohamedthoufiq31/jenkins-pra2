@@ -1,7 +1,7 @@
 pipeline {
 
     agent {
-        label 'deploy'
+        label 'tomcat'
     }
 
     environment {
