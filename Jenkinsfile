@@ -1,6 +1,9 @@
+```groovy
 pipeline {
 
-    agent tomcat
+    agent {
+        label 'deploy'
+    }
 
     environment {
         TOMCAT_HOME = '/opt/apache-tomcat-9.0.122'
@@ -11,7 +14,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo 'Source code checkout completed'
+                git branch: 'main',
+                    url: 'https://github.com/Mohamedthoufiq31/jenkins-pra2.git'
             }
         }
 
@@ -23,14 +27,14 @@ pipeline {
 
         stage('Find WAR') {
             steps {
-                sh 'find target -name "*.war"'
+                sh 'find target -name "*.war" -type f'
             }
         }
 
         stage('Deploy to Tomcat') {
             steps {
                 sh '''
-                    sudo cp target/*.war $TOMCAT_HOME/webapps/
+                    sudo cp target/*.war $TOMCAT_HOME/webapps/$APP_NAME.war
                 '''
             }
         }
@@ -43,7 +47,8 @@ pipeline {
         }
 
         failure {
-            echo 'Deploymentsss failed!'
+            echo 'Deployment failed!'
         }
     }
 }
+```
