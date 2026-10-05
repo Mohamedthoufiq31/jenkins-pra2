@@ -1,6 +1,6 @@
 pipeline {
 
-    agent any
+    agent tomcat
 
     environment {
         TOMCAT_HOME = '/opt/apache-tomcat-9.0.122'
